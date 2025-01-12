@@ -18,29 +18,31 @@ namespace Client
     public partial class MainWindow : Window
     {
         private HubConnection _hubConnection;
+        private string _userName;
 
-        public MainWindow()
+        public MainWindow(string userName, string serverURL)
         {
             InitializeComponent();
-            InitializeSignalR();
+            InitializeSignalR(serverURL);
+            _userName = userName;
         }
 
-        private async void InitializeSignalR()
+        private async void InitializeSignalR(string serverURL)
         {
-            _hubConnection = new HubConnectionBuilder()
-                .WithUrl("http://localhost:5135/chathub")
-                .Build();
-
-            _hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
-            {
-                Dispatcher.Invoke(() =>
-                {
-                    ChatMessages.Text += $"{user}: {message}\n";
-                });
-            });
-
             try
             {
+                _hubConnection = new HubConnectionBuilder()
+                .WithUrl($"{serverURL}/chathub")
+                .Build();
+
+                _hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        ChatMessages.Text += $"{user}: {message}\n";
+                    });
+                });
+
                 await _hubConnection.StartAsync();
                 ChatMessages.Text += "Connected to the chat server.\n";
             }
@@ -52,20 +54,31 @@ namespace Client
 
         private async void SendButton_Click(object sender, RoutedEventArgs e)
         {
-            if (_hubConnection.State == HubConnectionState.Connected)
+            try
             {
-                string user = "User";
-                string message = MessageInput.Text;
-
-                if (!string.IsNullOrEmpty(message))
+                if (_hubConnection == null) 
                 {
-                    await _hubConnection.InvokeAsync("SendMessage", user, message);
-                    MessageInput.Clear();
+                    throw new Exception("Invalid server");
+                }
+
+                if (_hubConnection.State == HubConnectionState.Connected)
+                {
+                    string message = MessageInput.Text;
+
+                    if (!string.IsNullOrEmpty(message))
+                    {
+                        await _hubConnection.InvokeAsync("SendMessage", _userName, message);
+                        MessageInput.Clear();
+                    }
+                }
+                else
+                {
+                    ChatMessages.Text += "Not connected to the server.\n";
                 }
             }
-            else
+            catch (Exception ex)
             {
-                ChatMessages.Text += "Not connected to the server.\n";
+                ChatMessages.Text += ex.Message + '\n';
             }
         }
     }
