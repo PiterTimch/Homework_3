@@ -5,8 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Chat" Height="450" Width="800">
     <Grid>
-
+        <TextBox Name="ChatMessages" VerticalScrollBarVisibility="Auto" IsReadOnly="True"
+                 HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="300" Margin="10"/>
+        <TextBox Name="MessageInput" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Height="40" Margin="10,0,10,50"/>
+        <Button Name="SendButton" Content="Send" HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                Width="100" Height="40" Margin="0,0,10,10" Click="SendButton_Click"/>
     </Grid>
 </Window>
