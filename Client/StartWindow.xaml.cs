@@ -26,8 +26,25 @@ namespace Client
 
         private void hoinBT_Click(object sender, RoutedEventArgs e)
         {
-            new MainWindow(this.userNameTB.Text, this.serverURLTB.Text).Show();
-            this.Close();
+            try
+            {
+                if (!IsValidInput())
+                {
+                    throw new Exception("There are empty input fields");
+                }
+                new MainWindow(this.userNameTB.Text, this.serverURLTB.Text).Show();
+                this.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private bool IsValidInput()
+        {
+            return !String.IsNullOrEmpty(this.serverURLTB.Text) && !String.IsNullOrWhiteSpace(this.serverURLTB.Text) &&
+                !String.IsNullOrEmpty(this.userNameTB.Text) && !String.IsNullOrWhiteSpace(this.userNameTB.Text);
         }
     }
 }

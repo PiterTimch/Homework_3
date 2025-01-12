@@ -81,5 +81,11 @@ namespace Client
                 ChatMessages.Text += ex.Message + '\n';
             }
         }
+
+        private void reloginBT_Click(object sender, RoutedEventArgs e)
+        {
+            new StartWindow().Show();
+            this.Close();
+        }
     }
 }

@@ -10,7 +10,13 @@
         <TextBox Name="ChatMessages" VerticalScrollBarVisibility="Auto" IsReadOnly="True"
                  HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="300" Margin="10"/>
         <TextBox Name="MessageInput" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Height="40" Margin="10,0,10,50"/>
-        <Button Name="SendButton" Content="Send" HorizontalAlignment="Right" VerticalAlignment="Bottom"
-                Width="100" Height="40" Margin="0,0,10,10" Click="SendButton_Click"/>
+
+        <StackPanel Orientation="Horizontal">
+            <Button Name="SendButton" Content="Send" HorizontalAlignment="Right" VerticalAlignment="Bottom"
+            Width="100" Height="40" Margin="0,0,10,10" Click="SendButton_Click"/>
+
+            <Button Name="reloginBT" Content="Relogin" HorizontalAlignment="Right" VerticalAlignment="Bottom"
+            Width="100" Height="40" Margin="0,0,10,10" Click="reloginBT_Click"/>
+        </StackPanel>
     </Grid>
 </Window>
