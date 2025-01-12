@@ -39,16 +39,16 @@ namespace Client
                 {
                     Dispatcher.Invoke(() =>
                     {
-                        ChatMessages.Text += $"{user}: {message}\n";
+                        this.chatMessagesTB.Text += $"{user}: {message}\n";
                     });
                 });
 
                 await _hubConnection.StartAsync();
-                ChatMessages.Text += "Connected to the chat server.\n";
+                this.chatMessagesTB.Text += "Connected to the chat server.\n";
             }
             catch (Exception ex)
             {
-                ChatMessages.Text += $"Connection failed: {ex.Message}\n";
+                this.chatMessagesTB.Text += $"Connection failed: {ex.Message}\n";
             }
         }
 
@@ -63,22 +63,22 @@ namespace Client
 
                 if (_hubConnection.State == HubConnectionState.Connected)
                 {
-                    string message = MessageInput.Text;
+                    string message = this.messageInputTB.Text;
 
                     if (!string.IsNullOrEmpty(message))
                     {
                         await _hubConnection.InvokeAsync("SendMessage", _userName, message);
-                        MessageInput.Clear();
+                        this.messageInputTB.Clear();
                     }
                 }
                 else
                 {
-                    ChatMessages.Text += "Not connected to the server.\n";
+                    this.chatMessagesTB.Text += "Not connected to the server.\n";
                 }
             }
             catch (Exception ex)
             {
-                ChatMessages.Text += ex.Message + '\n';
+                this.chatMessagesTB.Text += ex.Message + '\n';
             }
         }
 

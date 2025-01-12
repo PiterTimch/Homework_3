@@ -5,7 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client"
         mc:Ignorable="d"
-        Title="StartWindow" Height="450" Width="800">
+        Title="StartWindow" Height="400" Width="400" ResizeMode="NoResize" Background="Beige">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Style.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
         <TextBlock>Enter server (http://localhost:5135/chathub for ex.):</TextBlock>
         <TextBox x:Name="serverURLTB"></TextBox>

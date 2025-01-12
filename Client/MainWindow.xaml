@@ -5,18 +5,28 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client"
         mc:Ignorable="d"
-        Title="Chat" Height="450" Width="800">
+        Title="Chat" Height="500" Width="600" ResizeMode="NoResize" Background="Beige">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Style.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
     <Grid>
-        <TextBox Name="ChatMessages" VerticalScrollBarVisibility="Auto" IsReadOnly="True"
-                 HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="300" Margin="10"/>
-        <TextBox Name="MessageInput" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Height="40" Margin="10,0,10,50"/>
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="0.6*"></RowDefinition>
+        </Grid.RowDefinitions>
+        
+        <TextBox Name="chatMessagesTB" Width="500" HorizontalAlignment="Center" Height="auto" VerticalScrollBarVisibility="Auto" IsReadOnly="True"/>
 
-        <StackPanel Orientation="Horizontal">
-            <Button Name="SendButton" Content="Send" HorizontalAlignment="Right" VerticalAlignment="Bottom"
-            Width="100" Height="40" Margin="0,0,10,10" Click="SendButton_Click"/>
-
-            <Button Name="reloginBT" Content="Relogin" HorizontalAlignment="Right" VerticalAlignment="Bottom"
-            Width="100" Height="40" Margin="0,0,10,10" Click="reloginBT_Click"/>
+        <StackPanel Orientation="Horizontal" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <TextBox Width="250" MaxHeight="50" VerticalScrollBarVisibility="Auto" Name="messageInputTB"/>
+            <Button Name="SendButton" Content="Send" Click="SendButton_Click"/>
+            <Button Name="reloginBT" Content="Relogin" Click="reloginBT_Click" HorizontalAlignment="Right"/>
         </StackPanel>
     </Grid>
 </Window>
