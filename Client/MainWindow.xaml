@@ -17,16 +17,19 @@
 
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="0.2*"></RowDefinition>
             <RowDefinition></RowDefinition>
             <RowDefinition Height="0.6*"></RowDefinition>
         </Grid.RowDefinitions>
-        
-        <TextBox Name="chatMessagesTB" Width="500" HorizontalAlignment="Center" Height="auto" VerticalScrollBarVisibility="Auto" IsReadOnly="True"/>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center">
+        <Button Name="reloginBT" Content="Relogin" Click="reloginBT_Click" HorizontalAlignment="Right"/>
+
+        <RichTextBox Name="chatMessagesTB" Grid.Row="1" Width="500" HorizontalAlignment="Center" Height="auto" VerticalScrollBarVisibility="Auto" IsReadOnly="True"/>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center">
             <TextBox Width="250" MaxHeight="50" VerticalScrollBarVisibility="Auto" Name="messageInputTB"/>
-            <Button Name="SendButton" Content="Send" Click="SendButton_Click"/>
-            <Button Name="reloginBT" Content="Relogin" Click="reloginBT_Click" HorizontalAlignment="Right"/>
+            <Button x:Name="selectImageBT" Width="auto" Content="📷" Margin="-20,10,20,10" Click="selectImageBT_Click"/>
+            <Button Name="sendBT" Content="(っ'-')╮==💌" Click="sendBT_Click"/>
         </StackPanel>
     </Grid>
 </Window>

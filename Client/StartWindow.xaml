@@ -16,7 +16,7 @@
     </Window.Resources>
 
     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-        <TextBlock>Enter server (http://localhost:5135/chathub for ex.):</TextBlock>
+        <TextBlock>Enter server (http://localhost:5135 for ex.):</TextBlock>
         <TextBox x:Name="serverURLTB"></TextBox>
         <TextBlock>Enter your chat name:</TextBlock>
         <TextBox x:Name="userNameTB"></TextBox>

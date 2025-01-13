@@ -34,5 +34,16 @@
         <Setter Property="Width" Value="200"></Setter>
         <Setter Property="HorizontalAlignment" Value="Left"></Setter>
     </Style>
-    
+
+    <Style TargetType="RichTextBox">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontFamily" Value="{DynamicResource MaiFont}"/>
+        <Setter Property="Margin" Value="20,10"/>
+        <Setter Property="Foreground" Value="{DynamicResource FontColor}"></Setter>
+        <Setter Property="Background" Value="{DynamicResource FontSecondColor}"></Setter>
+        <Setter Property="Padding" Value="5"></Setter>
+        <Setter Property="Width" Value="200"></Setter>
+        <Setter Property="HorizontalAlignment" Value="Left"></Setter>
+    </Style>
+
 </ResourceDictionary>
