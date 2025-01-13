@@ -2,6 +2,7 @@
 using Client.Models;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.VisualBasic.ApplicationServices;
+using System.Drawing;
 using System.Net.Http;
 using System.Text;
 using System.Windows;
@@ -37,9 +38,10 @@ namespace Client
             _imageServer = imageServer;
             _user = user;
 
-            _serverInChat = new UserView() // доробити
+            _serverInChat = new UserView()
             { 
-                Name = "Server"
+                Name = "Server",
+                AvatarImgPath = "/images/68db153d-3e09-46ab-ad57-015ccdf10661.jpg"
             };
         }
 
@@ -51,11 +53,11 @@ namespace Client
                 .WithUrl($"{serverURL}/chathub")
                 .Build();
 
-                _hubConnection.On<string, string>("ReceiveMessage", (userName, message) =>
+                _hubConnection.On<string, string, string>("ReceiveMessage", (userName, message, imagePath) =>
                 {
-                    Dispatcher.Invoke(async () =>
+                    Dispatcher.Invoke(() =>
                     {
-                        UserView anotherUser = new UserView() { Name = userName }; //доробити
+                        UserView anotherUser = new UserView() { Name = userName, AvatarImgPath = imagePath };
                         AppendTextToRichTextBox(anotherUser, message);
                     });
                 });
@@ -86,7 +88,7 @@ namespace Client
 
                         if (!string.IsNullOrEmpty(message))
                         {
-                            await _hubConnection.InvokeAsync("SendMessage", _user.Name, message);
+                            await _hubConnection.InvokeAsync("SendMessage", _user.Name, message, _user.AvatarImgPath);
                         }
                     }
                     else
@@ -129,12 +131,31 @@ namespace Client
             }
         }
 
-        private void AppendTextToRichTextBox(UserView user, string message) //доробити
+        private void AppendTextToRichTextBox(UserView user, string message)
         {
             Run userText = new Run($"{user.Name}: ") { Foreground = System.Windows.Media.Brushes.Blue };
             Run messageText = new Run($"{message}\n");
 
+            System.Windows.Controls.Image avatarImage = new System.Windows.Controls.Image();
+
+            BitmapImage bitmap = ImageSender.GetImageFromServer(
+                user.AvatarImgPath,
+                _imageServer
+            );
+
+            double originalWidth = bitmap.PixelWidth;
+            double originalHeight = bitmap.PixelHeight;
+            double targetHeight = 100;
+            double aspectRatio = originalWidth / originalHeight;
+
+            avatarImage.Height = targetHeight;
+            avatarImage.Width = targetHeight * aspectRatio;
+            avatarImage.Source = bitmap;
+
+            InlineUIContainer container = new InlineUIContainer(avatarImage);
+
             Paragraph paragraph = new Paragraph();
+            paragraph.Inlines.Add(container);
             paragraph.Inlines.Add(userText);
             paragraph.Inlines.Add(messageText);
 
@@ -147,10 +168,10 @@ namespace Client
         {
             Run userText = new Run($"{user.Name}: ") { Foreground = System.Windows.Media.Brushes.Blue };
 
-            System.Windows.Controls.Image image = new System.Windows.Controls.Image();
+            System.Windows.Controls.Image avatarImage = new System.Windows.Controls.Image();
 
             BitmapImage bitmap = ImageSender.GetImageFromServer(
-                await ImageSender.UploadImageAsync(imagePath, _imageServer),
+                user.AvatarImgPath,
                 _imageServer
             );
 
@@ -159,12 +180,31 @@ namespace Client
             double targetHeight = 100;
             double aspectRatio = originalWidth / originalHeight;
 
+            avatarImage.Height = targetHeight;
+            avatarImage.Width = targetHeight * aspectRatio;
+            avatarImage.Source = bitmap;
+
+            InlineUIContainer avatarContainer = new InlineUIContainer(avatarImage);
+
+            System.Windows.Controls.Image image = new System.Windows.Controls.Image();
+
+            bitmap = ImageSender.GetImageFromServer(
+                await ImageSender.UploadImageAsync(imagePath, _imageServer),
+                _imageServer
+            );
+
+            originalWidth = bitmap.PixelWidth;
+            originalWidth = bitmap.PixelHeight;
+            originalWidth = 100;
+            originalWidth = originalWidth / originalHeight;
+
             image.Height = targetHeight;
             image.Width = targetHeight * aspectRatio;
             image.Source = bitmap;
 
             InlineUIContainer container = new InlineUIContainer(image);
             Paragraph paragraph = new Paragraph();
+            paragraph.Inlines.Add(avatarContainer);
             paragraph.Inlines.Add(userText);
             paragraph.Inlines.Add(container);
 

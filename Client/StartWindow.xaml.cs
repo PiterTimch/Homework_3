@@ -61,14 +61,7 @@ namespace Client
                 UserView user = new UserView();
 
                 user.Name = this.userNameTB.Text;
-                BitmapImage source = ImageSender.GetImageFromServer(
-                await ImageSender.UploadImageAsync(this.avatarPathTB.Text, _imageServer),
-                _imageServer
-                );
-                user.Avatar = new System.Windows.Controls.Image() 
-                { 
-                    Source = source
-                };
+                user.AvatarImgPath = await ImageSender.UploadImageAsync(this.avatarPathTB.Text, _imageServer);
 
                 new MainWindow(user, this.serverURLTB.Text, _imageServer).Show();
                 this.Close();

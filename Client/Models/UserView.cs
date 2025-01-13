@@ -9,6 +9,6 @@ namespace Client.Models
     public class UserView
     {
         public string Name { get; set; }
-        public System.Windows.Controls.Image Avatar { get; set; }
+        public string AvatarImgPath { get; set; }
     }
 }
