@@ -20,7 +20,12 @@
         <TextBox x:Name="serverURLTB"></TextBox>
         <TextBlock>Enter your chat name:</TextBlock>
         <TextBox x:Name="userNameTB"></TextBox>
+        <TextBlock>Load your avatar:</TextBlock>
+        <StackPanel Orientation="Horizontal">
+            <TextBox x:Name="avatarPathTB"></TextBox>
+            <Button Width="auto" Margin="-15,10,0,10" Click="Button_Click">...</Button>
+        </StackPanel>
 
-        <Button x:Name="hoinBT" Click="hoinBT_Click">Join</Button>
+        <Button x:Name="joinBT" Click="joinBT_Click">Join</Button>
     </StackPanel>
 </Window>

@@ -1,5 +1,7 @@
 ﻿using Client.Connecting;
+using Client.Models;
 using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.VisualBasic.ApplicationServices;
 using System.Net.Http;
 using System.Text;
 using System.Windows;
@@ -23,35 +25,22 @@ namespace Client
         private HubConnection _hubConnection;
         private HttpClient _imageServer;
         
-        private string _userName; //зробити клас
+        private UserView _user;
+        private UserView _serverInChat;
 
         private string _sendBtText = "(っ'-')╮==💌";
         private string _sendBtImage = "(っ'-')╮==🌄";
-        public MainWindow(string userName, string serverURL)
+        public MainWindow(UserView user, string serverURL, HttpClient imageServer)
         {
             InitializeComponent();
             InitializeSignalR(serverURL);
-            InitializeHttpClient();
-            _userName = userName;
-        }
+            _imageServer = imageServer;
+            _user = user;
 
-        private async void InitializeHttpClient()
-        {
-            try
-            {
-                _imageServer = new HttpClient { BaseAddress = new Uri("https://kukumber.itstep.click/") };
-
-                HttpResponseMessage response = await _imageServer.PostAsync("api/galleries/upload", null);
-
-                if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-                {
-                    throw new Exception("Invalid port");
-                }
-            }
-            catch (Exception ex)
-            {
-                AppendTextToRichTextBox("Server", $"Connection failed: {ex.Message}\n");
-            }
+            _serverInChat = new UserView() // доробити
+            { 
+                Name = "Server"
+            };
         }
 
         private async void InitializeSignalR(string serverURL)
@@ -62,20 +51,21 @@ namespace Client
                 .WithUrl($"{serverURL}/chathub")
                 .Build();
 
-                _hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
+                _hubConnection.On<string, string>("ReceiveMessage", (userName, message) =>
                 {
-                    Dispatcher.Invoke(() =>
+                    Dispatcher.Invoke(async () =>
                     {
-                        AppendTextToRichTextBox(user, message);
+                        UserView anotherUser = new UserView() { Name = userName }; //доробити
+                        AppendTextToRichTextBox(anotherUser, message);
                     });
                 });
 
                 await _hubConnection.StartAsync();
-                AppendTextToRichTextBox("Server", "Connected to the chat server");
+                AppendTextToRichTextBox(_serverInChat, "Connected to the chat server");
             }
             catch (Exception ex)
             {
-                AppendTextToRichTextBox("Server", $"Connection failed: {ex.Message}");
+                AppendTextToRichTextBox(_serverInChat, $"Connection failed: {ex.Message}");
             }
         }
 
@@ -96,17 +86,17 @@ namespace Client
 
                         if (!string.IsNullOrEmpty(message))
                         {
-                            await _hubConnection.InvokeAsync("SendMessage", _userName, message);
+                            await _hubConnection.InvokeAsync("SendMessage", _user.Name, message);
                         }
                     }
                     else
                     {
-                        AppendTextToRichTextBox("Server", "Not connected to the server.");
+                        AppendTextToRichTextBox(_serverInChat, "Not connected to the server.");
                     }
                 }
                 else
                 {
-                    await SendImage(_userName, this.messageInputTB.Text);
+                    await SendImage(_user, this.messageInputTB.Text);
                 }
 
                 this.sendBT.Content = _sendBtText;
@@ -114,7 +104,7 @@ namespace Client
             }
             catch (Exception ex)
             {
-                AppendTextToRichTextBox("Server", ex.Message);
+                AppendTextToRichTextBox(_serverInChat, ex.Message);
             }
         }
 
@@ -139,9 +129,9 @@ namespace Client
             }
         }
 
-        private void AppendTextToRichTextBox(string user, string message)
+        private void AppendTextToRichTextBox(UserView user, string message) //доробити
         {
-            Run userText = new Run($"{user}: ") { Foreground = System.Windows.Media.Brushes.Blue };
+            Run userText = new Run($"{user.Name}: ") { Foreground = System.Windows.Media.Brushes.Blue };
             Run messageText = new Run($"{message}\n");
 
             Paragraph paragraph = new Paragraph();
@@ -153,9 +143,9 @@ namespace Client
             this.chatMessagesTB.ScrollToEnd();
         }
 
-        private async Task SendImage(string user, string imagePath)
+        private async Task SendImage(UserView user, string imagePath)//доробити
         {
-            Run userText = new Run($"{user}: ") { Foreground = System.Windows.Media.Brushes.Blue };
+            Run userText = new Run($"{user.Name}: ") { Foreground = System.Windows.Media.Brushes.Blue };
 
             System.Windows.Controls.Image image = new System.Windows.Controls.Image();
 
@@ -180,6 +170,5 @@ namespace Client
 
             this.chatMessagesTB.Document.Blocks.Add(paragraph);
         }
-
     }
 }

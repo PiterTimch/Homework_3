@@ -1,6 +1,9 @@
-﻿using System;
+﻿using Client.Connecting;
+using Client.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -19,12 +22,34 @@ namespace Client
     /// </summary>
     public partial class StartWindow : Window
     {
+        private HttpClient _imageServer;
+
         public StartWindow()
         {
             InitializeComponent();
+            InitializeHttpClient();
         }
 
-        private void hoinBT_Click(object sender, RoutedEventArgs e)
+        private async void InitializeHttpClient()
+        {
+            try
+            {
+                _imageServer = new HttpClient { BaseAddress = new Uri("https://kukumber.itstep.click/") };
+
+                HttpResponseMessage response = await _imageServer.PostAsync("api/galleries/upload", null);
+
+                if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    throw new Exception("Invalid port");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show($"Connection failed: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private async void joinBT_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -32,7 +57,20 @@ namespace Client
                 {
                     throw new Exception("There are empty input fields");
                 }
-                new MainWindow(this.userNameTB.Text, this.serverURLTB.Text).Show();
+
+                UserView user = new UserView();
+
+                user.Name = this.userNameTB.Text;
+                BitmapImage source = ImageSender.GetImageFromServer(
+                await ImageSender.UploadImageAsync(this.avatarPathTB.Text, _imageServer),
+                _imageServer
+                );
+                user.Avatar = new System.Windows.Controls.Image() 
+                { 
+                    Source = source
+                };
+
+                new MainWindow(user, this.serverURLTB.Text, _imageServer).Show();
                 this.Close();
             }
             catch (Exception ex)
@@ -45,6 +83,20 @@ namespace Client
         {
             return !String.IsNullOrEmpty(this.serverURLTB.Text) && !String.IsNullOrWhiteSpace(this.serverURLTB.Text) &&
                 !String.IsNullOrEmpty(this.userNameTB.Text) && !String.IsNullOrWhiteSpace(this.userNameTB.Text);
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            using (var openFileDialog = new System.Windows.Forms.OpenFileDialog())
+            {
+                openFileDialog.Filter = "Image Files|*.jpg;*.jpeg;*.png;";
+                openFileDialog.Title = "Select an Image File";
+
+                if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    this.avatarPathTB.Text = openFileDialog.FileName;
+                }
+            }
         }
     }
 }
