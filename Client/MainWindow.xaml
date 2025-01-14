@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client"
         mc:Ignorable="d"
-        Title="Chat" Height="500" Width="600" ResizeMode="NoResize" Background="Beige">
+        Title="Chat" MinHeight="500" MinWidth="600" Background="Beige">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -24,7 +24,7 @@
 
         <Button Name="reloginBT" Content="Relogin" Click="reloginBT_Click" HorizontalAlignment="Right"/>
 
-        <RichTextBox Name="chatMessagesTB" Grid.Row="1" Width="500" HorizontalAlignment="Center" Height="auto" VerticalScrollBarVisibility="Auto" IsReadOnly="True"/>
+        <RichTextBox Name="chatMessagesTB" Grid.Row="1" HorizontalAlignment="Stretch" Height="auto" VerticalScrollBarVisibility="Auto" IsReadOnly="True"/>
 
         <StackPanel Orientation="Horizontal" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center">
             <TextBox Width="250" MaxHeight="50" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" Name="messageInputTB"/>
